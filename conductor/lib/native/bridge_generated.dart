@@ -11,23 +11,58 @@ import 'package:meta/meta.dart';
 import 'dart:ffi' as ffi;
 
 abstract class Native {
-  Future<Speaker> newStaticMethodSpeaker({required String ip, dynamic hint});
+  Future<RwLockRawSpeaker> speakerNew({required String ip, dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSpeakerConstMeta;
+  FlutterRustBridgeTaskConstMeta get kSpeakerNewConstMeta;
+
+  Future<void> speakerConnect({required RwLockRawSpeaker x, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerConnectConstMeta;
+
+  Future<bool> speakerIsConnected({required RwLockRawSpeaker x, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerIsConnectedConstMeta;
+
+  Future<Info?> speakerGetInfo({required RwLockRawSpeaker x, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerGetInfoConstMeta;
+
+  DropFnType get dropOpaqueRwLockRawSpeaker;
+  ShareFnType get shareOpaqueRwLockRawSpeaker;
+  OpaqueTypeFinalizer get RwLockRawSpeakerFinalizer;
 }
 
-class Speaker {
+@sealed
+class RwLockRawSpeaker extends FrbOpaque {
   final Native bridge;
-  final String ip;
+  RwLockRawSpeaker.fromRaw(int ptr, int size, this.bridge)
+      : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => bridge.dropOpaqueRwLockRawSpeaker;
 
-  Speaker({
-    required this.bridge,
-    required this.ip,
+  @override
+  ShareFnType get shareFn => bridge.shareOpaqueRwLockRawSpeaker;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => bridge.RwLockRawSpeakerFinalizer;
+}
+
+class Info {
+  final String hostname;
+  final OS os;
+  final double ping;
+
+  Info({
+    required this.hostname,
+    required this.os,
+    required this.ping,
   });
+}
 
-  static Future<Speaker> newSpeaker(
-          {required Native bridge, required String ip, dynamic hint}) =>
-      bridge.newStaticMethodSpeaker(ip: ip, hint: hint);
+enum OS {
+  MacOS,
+  Windows,
+  Linux,
 }
 
 class NativeImpl implements Native {
@@ -39,41 +74,128 @@ class NativeImpl implements Native {
   factory NativeImpl.wasm(FutureOr<WasmModule> module) =>
       NativeImpl(module as ExternalLibrary);
   NativeImpl.raw(this._platform);
-  Future<Speaker> newStaticMethodSpeaker({required String ip, dynamic hint}) {
+  Future<RwLockRawSpeaker> speakerNew({required String ip, dynamic hint}) {
     var arg0 = _platform.api2wire_String(ip);
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) =>
-          _platform.inner.wire_new__static_method__Speaker(port_, arg0),
-      parseSuccessData: (d) => _wire2api_speaker(d),
-      constMeta: kNewStaticMethodSpeakerConstMeta,
+      callFfi: (port_) => _platform.inner.wire_speaker_new(port_, arg0),
+      parseSuccessData: _wire2api_RwLockRawSpeaker,
+      constMeta: kSpeakerNewConstMeta,
       argValues: [ip],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSpeakerConstMeta =>
+  FlutterRustBridgeTaskConstMeta get kSpeakerNewConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
-        debugName: "new__static_method__Speaker",
+        debugName: "speaker_new",
         argNames: ["ip"],
       );
+
+  Future<void> speakerConnect({required RwLockRawSpeaker x, dynamic hint}) {
+    var arg0 = _platform.api2wire_RwLockRawSpeaker(x);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_speaker_connect(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kSpeakerConnectConstMeta,
+      argValues: [x],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerConnectConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "speaker_connect",
+        argNames: ["x"],
+      );
+
+  Future<bool> speakerIsConnected({required RwLockRawSpeaker x, dynamic hint}) {
+    var arg0 = _platform.api2wire_RwLockRawSpeaker(x);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_speaker_is_connected(port_, arg0),
+      parseSuccessData: _wire2api_bool,
+      constMeta: kSpeakerIsConnectedConstMeta,
+      argValues: [x],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerIsConnectedConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "speaker_is_connected",
+        argNames: ["x"],
+      );
+
+  Future<Info?> speakerGetInfo({required RwLockRawSpeaker x, dynamic hint}) {
+    var arg0 = _platform.api2wire_RwLockRawSpeaker(x);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_speaker_get_info(port_, arg0),
+      parseSuccessData: _wire2api_opt_box_autoadd_info,
+      constMeta: kSpeakerGetInfoConstMeta,
+      argValues: [x],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerGetInfoConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "speaker_get_info",
+        argNames: ["x"],
+      );
+
+  DropFnType get dropOpaqueRwLockRawSpeaker =>
+      _platform.inner.drop_opaque_RwLockRawSpeaker;
+  ShareFnType get shareOpaqueRwLockRawSpeaker =>
+      _platform.inner.share_opaque_RwLockRawSpeaker;
+  OpaqueTypeFinalizer get RwLockRawSpeakerFinalizer =>
+      _platform.RwLockRawSpeakerFinalizer;
 
   void dispose() {
     _platform.dispose();
   }
 // Section: wire2api
 
+  RwLockRawSpeaker _wire2api_RwLockRawSpeaker(dynamic raw) {
+    return RwLockRawSpeaker.fromRaw(raw[0], raw[1], this);
+  }
+
   String _wire2api_String(dynamic raw) {
     return raw as String;
   }
 
-  Speaker _wire2api_speaker(dynamic raw) {
+  bool _wire2api_bool(dynamic raw) {
+    return raw as bool;
+  }
+
+  Info _wire2api_box_autoadd_info(dynamic raw) {
+    return _wire2api_info(raw);
+  }
+
+  double _wire2api_f64(dynamic raw) {
+    return raw as double;
+  }
+
+  int _wire2api_i32(dynamic raw) {
+    return raw as int;
+  }
+
+  Info _wire2api_info(dynamic raw) {
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-    return Speaker(
-      bridge: this,
-      ip: _wire2api_String(arr[0]),
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return Info(
+      hostname: _wire2api_String(arr[0]),
+      os: _wire2api_os(arr[1]),
+      ping: _wire2api_f64(arr[2]),
     );
+  }
+
+  Info? _wire2api_opt_box_autoadd_info(dynamic raw) {
+    return raw == null ? null : _wire2api_box_autoadd_info(raw);
+  }
+
+  OS _wire2api_os(dynamic raw) {
+    return OS.values[raw];
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -82,6 +204,10 @@ class NativeImpl implements Native {
 
   Uint8List _wire2api_uint_8_list(dynamic raw) {
     return raw as Uint8List;
+  }
+
+  void _wire2api_unit(dynamic raw) {
+    return;
   }
 }
 
@@ -100,6 +226,13 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 // Section: api2wire
 
   @protected
+  wire_RwLockRawSpeaker api2wire_RwLockRawSpeaker(RwLockRawSpeaker raw) {
+    final ptr = inner.new_RwLockRawSpeaker();
+    _api_fill_to_wire_RwLockRawSpeaker(raw, ptr);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_uint_8_list> api2wire_String(String raw) {
     return api2wire_uint_8_list(utf8.encoder.convert(raw));
   }
@@ -112,8 +245,16 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   }
 // Section: finalizer
 
+  late final OpaqueTypeFinalizer _RwLockRawSpeakerFinalizer =
+      OpaqueTypeFinalizer(inner._drop_opaque_RwLockRawSpeakerPtr);
+  OpaqueTypeFinalizer get RwLockRawSpeakerFinalizer =>
+      _RwLockRawSpeakerFinalizer;
 // Section: api_fill_to_wire
 
+  void _api_fill_to_wire_RwLockRawSpeaker(
+      RwLockRawSpeaker apiObj, wire_RwLockRawSpeaker wireObj) {
+    wireObj.ptr = apiObj.shareOrMove();
+  }
 }
 
 // ignore_for_file: camel_case_types, non_constant_identifier_names, avoid_positional_boolean_parameters, annotate_overrides, constant_identifier_names
@@ -211,23 +352,83 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr
       .asFunction<int Function(ffi.Pointer<ffi.Void>)>();
 
-  void wire_new__static_method__Speaker(
+  void wire_speaker_new(
     int port_,
     ffi.Pointer<wire_uint_8_list> ip,
   ) {
-    return _wire_new__static_method__Speaker(
+    return _wire_speaker_new(
       port_,
       ip,
     );
   }
 
-  late final _wire_new__static_method__SpeakerPtr = _lookup<
-          ffi.NativeFunction<
-              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>(
-      'wire_new__static_method__Speaker');
-  late final _wire_new__static_method__Speaker =
-      _wire_new__static_method__SpeakerPtr
-          .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+  late final _wire_speaker_newPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>('wire_speaker_new');
+  late final _wire_speaker_new = _wire_speaker_newPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_speaker_connect(
+    int port_,
+    wire_RwLockRawSpeaker x,
+  ) {
+    return _wire_speaker_connect(
+      port_,
+      x,
+    );
+  }
+
+  late final _wire_speaker_connectPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, wire_RwLockRawSpeaker)>>('wire_speaker_connect');
+  late final _wire_speaker_connect = _wire_speaker_connectPtr
+      .asFunction<void Function(int, wire_RwLockRawSpeaker)>();
+
+  void wire_speaker_is_connected(
+    int port_,
+    wire_RwLockRawSpeaker x,
+  ) {
+    return _wire_speaker_is_connected(
+      port_,
+      x,
+    );
+  }
+
+  late final _wire_speaker_is_connectedPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, wire_RwLockRawSpeaker)>>('wire_speaker_is_connected');
+  late final _wire_speaker_is_connected = _wire_speaker_is_connectedPtr
+      .asFunction<void Function(int, wire_RwLockRawSpeaker)>();
+
+  void wire_speaker_get_info(
+    int port_,
+    wire_RwLockRawSpeaker x,
+  ) {
+    return _wire_speaker_get_info(
+      port_,
+      x,
+    );
+  }
+
+  late final _wire_speaker_get_infoPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, wire_RwLockRawSpeaker)>>('wire_speaker_get_info');
+  late final _wire_speaker_get_info = _wire_speaker_get_infoPtr
+      .asFunction<void Function(int, wire_RwLockRawSpeaker)>();
+
+  wire_RwLockRawSpeaker new_RwLockRawSpeaker() {
+    return _new_RwLockRawSpeaker();
+  }
+
+  late final _new_RwLockRawSpeakerPtr =
+      _lookup<ffi.NativeFunction<wire_RwLockRawSpeaker Function()>>(
+          'new_RwLockRawSpeaker');
+  late final _new_RwLockRawSpeaker =
+      _new_RwLockRawSpeakerPtr.asFunction<wire_RwLockRawSpeaker Function()>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
@@ -243,6 +444,35 @@ class NativeWire implements FlutterRustBridgeWireBase {
               ffi.Int32)>>('new_uint_8_list_0');
   late final _new_uint_8_list_0 = _new_uint_8_list_0Ptr
       .asFunction<ffi.Pointer<wire_uint_8_list> Function(int)>();
+
+  void drop_opaque_RwLockRawSpeaker(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_RwLockRawSpeaker(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_RwLockRawSpeakerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'drop_opaque_RwLockRawSpeaker');
+  late final _drop_opaque_RwLockRawSpeaker = _drop_opaque_RwLockRawSpeakerPtr
+      .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_RwLockRawSpeaker(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_RwLockRawSpeaker(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_RwLockRawSpeakerPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Void> Function(
+              ffi.Pointer<ffi.Void>)>>('share_opaque_RwLockRawSpeaker');
+  late final _share_opaque_RwLockRawSpeaker = _share_opaque_RwLockRawSpeakerPtr
+      .asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
   void free_WireSyncReturn(
     WireSyncReturn ptr,
@@ -266,6 +496,10 @@ class wire_uint_8_list extends ffi.Struct {
 
   @ffi.Int32()
   external int len;
+}
+
+class wire_RwLockRawSpeaker extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> ptr;
 }
 
 typedef DartPostCObjectFnType = ffi.Pointer<

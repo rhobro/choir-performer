@@ -9,5 +9,10 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-anyhow = "1"
+
+# ffi
 flutter_rust_bridge = "1"
+anyhow = "1"
+
+# misc
+rand = "0.8"

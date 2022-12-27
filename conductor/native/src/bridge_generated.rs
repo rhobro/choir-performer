@@ -21,19 +21,64 @@ use std::sync::Arc;
 
 // Section: wire functions
 
-fn wire_new__static_method__Speaker_impl(
-    port_: MessagePort,
-    ip: impl Wire2Api<String> + UnwindSafe,
-) {
+fn wire_speaker_new_impl(port_: MessagePort, ip: impl Wire2Api<String> + UnwindSafe) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
-            debug_name: "new__static_method__Speaker",
+            debug_name: "speaker_new",
             port: Some(port_),
             mode: FfiCallMode::Normal,
         },
         move || {
             let api_ip = ip.wire2api();
-            move |task_callback| Ok(Speaker::new(api_ip))
+            move |task_callback| speaker_new(api_ip)
+        },
+    )
+}
+fn wire_speaker_connect_impl(
+    port_: MessagePort,
+    x: impl Wire2Api<RustOpaque<RwLock<RawSpeaker>>> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "speaker_connect",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_x = x.wire2api();
+            move |task_callback| speaker_connect(api_x)
+        },
+    )
+}
+fn wire_speaker_is_connected_impl(
+    port_: MessagePort,
+    x: impl Wire2Api<RustOpaque<RwLock<RawSpeaker>>> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "speaker_is_connected",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_x = x.wire2api();
+            move |task_callback| speaker_is_connected(api_x)
+        },
+    )
+}
+fn wire_speaker_get_info_impl(
+    port_: MessagePort,
+    x: impl Wire2Api<RustOpaque<RwLock<RawSpeaker>>> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "speaker_get_info",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_x = x.wire2api();
+            move |task_callback| speaker_get_info(api_x)
         },
     )
 }
@@ -68,12 +113,28 @@ impl Wire2Api<u8> for u8 {
 
 // Section: impl IntoDart
 
-impl support::IntoDart for Speaker {
+impl support::IntoDart for Info {
     fn into_dart(self) -> support::DartAbi {
-        vec![self.ip.into_dart()].into_dart()
+        vec![
+            self.hostname.into_dart(),
+            self.os.into_dart(),
+            self.ping.into_dart(),
+        ]
+        .into_dart()
     }
 }
-impl support::IntoDartExceptPrimitive for Speaker {}
+impl support::IntoDartExceptPrimitive for Info {}
+
+impl support::IntoDart for OS {
+    fn into_dart(self) -> support::DartAbi {
+        match self {
+            Self::MacOS => 0,
+            Self::Windows => 1,
+            Self::Linux => 2,
+        }
+        .into_dart()
+    }
+}
 
 // Section: executor
 
