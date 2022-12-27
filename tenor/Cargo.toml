@@ -1,0 +1,21 @@
+[package]
+name = "tenor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# audio
+rodio = "0.16"
+
+# networking
+tokio = { version = "1", features = ["full"] }
+zeroconf = "0.10"
+mdns = "3.0"
+futures_util = "0.3"
+
+# misc
+anyhow = "1.0"
+
+[profile.release]
+lto = true
+codegen-units = 1
