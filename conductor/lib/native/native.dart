@@ -1,11 +1,11 @@
 import 'dart:ffi';
-import 'dart:io';
-
-import 'package:conductor/native/bridge_generated.dart';
+import 'bridge_generated.dart';
+import 'dart:io' as io;
 
 const _base = 'native';
-final _path = Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
-final _dylib =
-    Platform.isMacOS ? DynamicLibrary.executable() : DynamicLibrary.open(_path);
 
-final api = NativeImpl(_dylib);
+final _dylib = io.Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
+
+final Native api = NativeImpl(io.Platform.isMacOS
+    ? DynamicLibrary.executable()
+    : DynamicLibrary.open(_dylib));

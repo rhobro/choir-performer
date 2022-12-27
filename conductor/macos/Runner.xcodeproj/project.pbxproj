@@ -27,7 +27,7 @@
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
 		97F3D8EF19ACEF85DB45ACBD /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FC6D42C25F0748D3E744F8C /* Pods_Runner.framework */; };
-		A3D4964229384C8700FB0055 /* libnative_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3D4963929384B5900FB0055 /* libnative_static.a */; };
+		C9DD371F295B747600C6BE97 /* libnative_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3D4963929384B5900FB0055 /* libnative_static.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,7 +52,7 @@
 			remoteGlobalIDString = CA60F0FEBE702969E816930C;
 			remoteInfo = "native-staticlib";
 		};
-		A3D4964029384C8200FB0055 /* PBXContainerItemProxy */ = {
+		C9DD371D295B746C00C6BE97 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A352534B2866B29F00EFD9C6 /* native.xcodeproj */;
 			proxyType = 1;
@@ -104,7 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3D4964229384C8700FB0055 /* libnative_static.a in Frameworks */,
+				C9DD371F295B747600C6BE97 /* libnative_static.a in Frameworks */,
 				97F3D8EF19ACEF85DB45ACBD /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,7 +195,6 @@
 				FFC736D569907E74F1691F37 /* Pods-Runner.release.xcconfig */,
 				254BF8406ECDFB73D76E91D4 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -225,7 +224,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				A3D4964129384C8200FB0055 /* PBXTargetDependency */,
+				C9DD371E295B746C00C6BE97 /* PBXTargetDependency */,
 				33CC11202044C79F0003C045 /* PBXTargetDependency */,
 			);
 			name = Runner;
@@ -411,10 +410,10 @@
 			target = 33CC111A2044C6BA0003C045 /* Flutter Assemble */;
 			targetProxy = 33CC111F2044C79F0003C045 /* PBXContainerItemProxy */;
 		};
-		A3D4964129384C8200FB0055 /* PBXTargetDependency */ = {
+		C9DD371E295B746C00C6BE97 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "native-staticlib";
-			targetProxy = A3D4964029384C8200FB0055 /* PBXContainerItemProxy */;
+			targetProxy = C9DD371D295B746C00C6BE97 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

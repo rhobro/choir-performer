@@ -15,7 +15,7 @@ pub fn speaker_new(ip: String) -> anyhow::Result<RustOpaque<RwLock<RawSpeaker>>>
 pub fn speaker_connect(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<()> {
     let mut x = x.write().unwrap();
 
-    x.conn = rand::thread_rng().gen_bool(0.1);
+    x.conn = rand::thread_rng().gen_bool(0.7);
     Ok(())
 }
 

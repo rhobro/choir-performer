@@ -10,6 +10,7 @@ gen:
     flutter_rust_bridge_codegen \
         --rust-input "native/src/api.rs" \
         --dart-output "lib/native/bridge_generated.dart" \
+        # --dart-decl-output "lib/native/bridge_definitions.dart" \
         --c-output "macos/Runner/bridge_generated.h"
 
 lint:
@@ -27,3 +28,4 @@ clean:
 upgrade:
     flutter pub upgrade
     cd native && cargo update
+    cargo install-update flutter_rust_bridge_codegen
