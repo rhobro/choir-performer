@@ -38,6 +38,8 @@ void wire_speaker_is_connected(int64_t port_, struct wire_RwLockRawSpeaker x);
 
 void wire_speaker_get_info(int64_t port_, struct wire_RwLockRawSpeaker x);
 
+void wire_speaker_ping(int64_t port_, struct wire_RwLockRawSpeaker x);
+
 struct wire_RwLockRawSpeaker new_RwLockRawSpeaker(void);
 
 struct wire_uint_8_list *new_uint_8_list_0(int32_t len);
@@ -54,6 +56,7 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_speaker_connect);
     dummy_var ^= ((int64_t) (void*) wire_speaker_is_connected);
     dummy_var ^= ((int64_t) (void*) wire_speaker_get_info);
+    dummy_var ^= ((int64_t) (void*) wire_speaker_ping);
     dummy_var ^= ((int64_t) (void*) new_RwLockRawSpeaker);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);
     dummy_var ^= ((int64_t) (void*) drop_opaque_RwLockRawSpeaker);

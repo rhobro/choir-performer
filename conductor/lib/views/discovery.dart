@@ -14,16 +14,40 @@ class _DiscoveryState extends State<Discovery> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(5),
+        child: Column(
+          children: [
+            // layout
 
-        // create list with each speaker
-        child: ListView.builder(
-          itemCount: speakers.length,
-          itemBuilder: (ctx, i) => _Item(
-            speakers[i],
-            onSelect: () => select(speakers[i].ip),
-            isSelected: speakers[i].ip == selectedIP,
-          ),
+            // list of devices
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(5),
+                // border
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+
+                child: ListView.builder(
+                  itemCount: speakers.length,
+                  itemBuilder: (ctx, i) => _Item(
+                    speakers[i],
+                    onSelect: () => select(speakers[i].ip),
+                    isSelected: speakers[i].ip == selectedIP,
+                  ),
+                ),
+              ),
+            ),
+
+            // toolbar
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: Text("hello"),
+            ),
+          ],
         ),
       ),
     );
@@ -56,7 +80,7 @@ class _DiscoveryState extends State<Discovery> {
   }
 }
 
-class _Item extends StatelessWidget {
+class _Item extends StatefulWidget {
   final Speaker x;
   final bool isSelected;
   final VoidCallback onSelect;
@@ -68,10 +92,14 @@ class _Item extends StatelessWidget {
   });
 
   @override
+  State<StatefulWidget> createState() => _ItemState();
+}
+
+class _ItemState extends State<_Item> {
+  @override
   Widget build(BuildContext context) {
-    // get connection status
     return GestureDetector(
-      onTap: onSelect,
+      onTap: widget.onSelect,
       child: Container(
         // border
         padding: EdgeInsets.only(
@@ -84,13 +112,13 @@ class _Item extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             // darken on selection
-            color: isSelected ? Colors.black : Colors.grey.shade300,
+            color: widget.isSelected ? Colors.black : Colors.grey.shade300,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
 
         child: FutureBuilder(
-          future: x.isConnected(),
+          future: isConnected,
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Container();
@@ -99,7 +127,7 @@ class _Item extends StatelessWidget {
 
             // get info
             return FutureBuilder(
-              future: x.getInfo(),
+              future: info,
               builder: (ctx, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container();
@@ -123,7 +151,7 @@ class _Item extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          x.ip,
+                          widget.x.ip,
                           style: TextStyle(
                             color: isConnected ? Colors.black : Colors.grey,
                             fontSize: 11,
@@ -149,5 +177,19 @@ class _Item extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  late Future<bool> isConnected;
+  late Future<Info?> info;
+
+  void refresh() => setState(() {
+        isConnected = widget.x.isConnected();
+        info = widget.x.getInfo();
+      });
+
+  @override
+  void initState() {
+    super.initState();
+    refresh();
   }
 }

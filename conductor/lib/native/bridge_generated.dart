@@ -27,6 +27,10 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kSpeakerGetInfoConstMeta;
 
+  Future<double> speakerPing({required RwLockRawSpeaker x, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerPingConstMeta;
+
   DropFnType get dropOpaqueRwLockRawSpeaker;
   ShareFnType get shareOpaqueRwLockRawSpeaker;
   OpaqueTypeFinalizer get RwLockRawSpeakerFinalizer;
@@ -50,12 +54,10 @@ class RwLockRawSpeaker extends FrbOpaque {
 class Info {
   final String hostname;
   final OS os;
-  final double ping;
 
   Info({
     required this.hostname,
     required this.os,
-    required this.ping,
   });
 }
 
@@ -143,6 +145,23 @@ class NativeImpl implements Native {
         argNames: ["x"],
       );
 
+  Future<double> speakerPing({required RwLockRawSpeaker x, dynamic hint}) {
+    var arg0 = _platform.api2wire_RwLockRawSpeaker(x);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_speaker_ping(port_, arg0),
+      parseSuccessData: _wire2api_f64,
+      constMeta: kSpeakerPingConstMeta,
+      argValues: [x],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSpeakerPingConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "speaker_ping",
+        argNames: ["x"],
+      );
+
   DropFnType get dropOpaqueRwLockRawSpeaker =>
       _platform.inner.drop_opaque_RwLockRawSpeaker;
   ShareFnType get shareOpaqueRwLockRawSpeaker =>
@@ -181,12 +200,11 @@ class NativeImpl implements Native {
 
   Info _wire2api_info(dynamic raw) {
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return Info(
       hostname: _wire2api_String(arr[0]),
       os: _wire2api_os(arr[1]),
-      ping: _wire2api_f64(arr[2]),
     );
   }
 
@@ -418,6 +436,23 @@ class NativeWire implements FlutterRustBridgeWireBase {
           ffi.Void Function(
               ffi.Int64, wire_RwLockRawSpeaker)>>('wire_speaker_get_info');
   late final _wire_speaker_get_info = _wire_speaker_get_infoPtr
+      .asFunction<void Function(int, wire_RwLockRawSpeaker)>();
+
+  void wire_speaker_ping(
+    int port_,
+    wire_RwLockRawSpeaker x,
+  ) {
+    return _wire_speaker_ping(
+      port_,
+      x,
+    );
+  }
+
+  late final _wire_speaker_pingPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, wire_RwLockRawSpeaker)>>('wire_speaker_ping');
+  late final _wire_speaker_ping = _wire_speaker_pingPtr
       .asFunction<void Function(int, wire_RwLockRawSpeaker)>();
 
   wire_RwLockRawSpeaker new_RwLockRawSpeaker() {

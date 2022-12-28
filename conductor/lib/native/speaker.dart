@@ -25,4 +25,8 @@ class Speaker {
   Future<Info?> getInfo() async {
     return api.speakerGetInfo(x: _x);
   }
+
+  Future<double> ping() async {
+    return api.speakerPing(x: _x);
+  }
 }

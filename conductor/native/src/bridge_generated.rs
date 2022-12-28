@@ -82,6 +82,22 @@ fn wire_speaker_get_info_impl(
         },
     )
 }
+fn wire_speaker_ping_impl(
+    port_: MessagePort,
+    x: impl Wire2Api<RustOpaque<RwLock<RawSpeaker>>> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "speaker_ping",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_x = x.wire2api();
+            move |task_callback| speaker_ping(api_x)
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -115,12 +131,7 @@ impl Wire2Api<u8> for u8 {
 
 impl support::IntoDart for Info {
     fn into_dart(self) -> support::DartAbi {
-        vec![
-            self.hostname.into_dart(),
-            self.os.into_dart(),
-            self.ping.into_dart(),
-        ]
-        .into_dart()
+        vec![self.hostname.into_dart(), self.os.into_dart()].into_dart()
     }
 }
 impl support::IntoDartExceptPrimitive for Info {}

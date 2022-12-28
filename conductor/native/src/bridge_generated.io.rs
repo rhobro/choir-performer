@@ -21,6 +21,11 @@ pub extern "C" fn wire_speaker_get_info(port_: i64, x: wire_RwLockRawSpeaker) {
     wire_speaker_get_info_impl(port_, x)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_speaker_ping(port_: i64, x: wire_RwLockRawSpeaker) {
+    wire_speaker_ping_impl(port_, x)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

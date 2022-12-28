@@ -30,22 +30,32 @@ pub fn speaker_is_connected(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result
 // only available if connected
 pub fn speaker_get_info(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<Option<Info>> {
     let x = x.read().unwrap();
+    let i = x.ip.split(".").last().unwrap().parse::<u32>().unwrap() % 3;
 
     Ok(if x.conn {
         Some(Info {
-            hostname: format!("Device {}", rand::thread_rng().gen_range(1..10)),
-            os: rand::thread_rng().gen(),
-            ping: rand::thread_rng().gen(),
+            hostname: format!("Device {}", x.ip.chars().last().unwrap()),
+            os: match i {
+                0 => OS::MacOS,
+                1 => OS::Windows,
+                _ => OS::Linux,
+            },
         })
     } else {
         None
     })
 }
 
+// test latency
+pub fn speaker_ping(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<f64> {
+    let x = x.write().unwrap();
+    
+    Ok(rand::thread_rng().gen())
+}
+
 pub struct Info {
     pub hostname: String,
     pub os: OS,
-    pub ping: f64, // in ms
 }
 
 pub enum OS {

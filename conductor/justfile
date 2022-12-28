@@ -10,12 +10,11 @@ gen:
     flutter_rust_bridge_codegen \
         --rust-input "native/src/api.rs" \
         --dart-output "lib/native/bridge_generated.dart" \
-        # --dart-decl-output "lib/native/bridge_definitions.dart" \
         --c-output "macos/Runner/bridge_generated.h"
 
 lint:
-    cd native && cargo fmt
     dart format .
+    cd native && cargo fmt
 
 check:
     flutter pub get
