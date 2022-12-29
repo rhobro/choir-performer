@@ -28,12 +28,12 @@ pub fn speaker_is_connected(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result
 
 // get current state
 // only available if connected
-pub fn speaker_get_info(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<Option<Info>> {
+pub fn speaker_get_info(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<Option<MachineInfo>> {
     let x = x.read().unwrap();
     let i = x.ip.split(".").last().unwrap().parse::<u32>().unwrap() % 3;
 
     Ok(if x.conn {
-        Some(Info {
+        Some(MachineInfo {
             hostname: format!("Device {}", x.ip.chars().last().unwrap()),
             os: match i {
                 0 => OS::MacOS,
@@ -53,7 +53,7 @@ pub fn speaker_ping(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<f64> {
     Ok(rand::thread_rng().gen())
 }
 
-pub struct Info {
+pub struct MachineInfo {
     pub hostname: String,
     pub os: OS,
 }

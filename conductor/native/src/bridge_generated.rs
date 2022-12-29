@@ -129,12 +129,12 @@ impl Wire2Api<u8> for u8 {
 
 // Section: impl IntoDart
 
-impl support::IntoDart for Info {
+impl support::IntoDart for MachineInfo {
     fn into_dart(self) -> support::DartAbi {
         vec![self.hostname.into_dart(), self.os.into_dart()].into_dart()
     }
 }
-impl support::IntoDartExceptPrimitive for Info {}
+impl support::IntoDartExceptPrimitive for MachineInfo {}
 
 impl support::IntoDart for OS {
     fn into_dart(self) -> support::DartAbi {

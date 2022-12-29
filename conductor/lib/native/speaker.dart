@@ -5,6 +5,7 @@ import 'package:conductor/native/native.dart';
 class Speaker {
   RwLockRawSpeaker _x;
   String _ip;
+  String get ip => _ip;
 
   Speaker._(this._x, this._ip);
 
@@ -20,9 +21,7 @@ class Speaker {
     return api.speakerIsConnected(x: _x);
   }
 
-  String get ip => _ip;
-
-  Future<Info?> getInfo() async {
+  Future<MachineInfo?> getInfo() async {
     return api.speakerGetInfo(x: _x);
   }
 

@@ -8,10 +8,12 @@ class Discovery extends StatefulWidget {
 }
 
 class _DiscoveryState extends State<Discovery> {
-  List<Speaker> speakers = [];
+  Map<String, Speaker> speakers = {};
 
   @override
   Widget build(BuildContext context) {
+    var ls = speakers.values.toList();
+
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(5),
@@ -34,9 +36,9 @@ class _DiscoveryState extends State<Discovery> {
                 child: ListView.builder(
                   itemCount: speakers.length,
                   itemBuilder: (ctx, i) => _Item(
-                    speakers[i],
-                    onSelect: () => select(speakers[i].ip),
-                    isSelected: speakers[i].ip == selectedIP,
+                    ls[i],
+                    onSelect: () => select(ls[i].ip),
+                    isSelected: ls[i].ip == selectedIP,
                   ),
                 ),
               ),
@@ -45,7 +47,13 @@ class _DiscoveryState extends State<Discovery> {
             // toolbar
             Padding(
               padding: EdgeInsets.all(5),
-              child: Text("hello"),
+              child: Column(
+                children: [
+                  selectedIP != null
+                      ? _MoreDetails(speakers[selectedIP!]!)
+                      : Container(),
+                ],
+              ),
             ),
           ],
         ),
@@ -71,10 +79,10 @@ class _DiscoveryState extends State<Discovery> {
 
     // add sample data
     Future.delayed(Duration(microseconds: 1), () async {
-      speakers = [];
+      speakers = {};
       for (var i = 1; i <= 5; i++) {
-        speakers.add(await Speaker.create("192.168.0.$i"));
-        await speakers.last.connect().then((_) => setState(() {}));
+        speakers["192.168.0.$i"] = await Speaker.create("192.168.0.$i");
+        await speakers["192.168.0.$i"]!.connect().then((_) => setState(() {}));
       }
     });
   }
@@ -132,7 +140,7 @@ class _ItemState extends State<_Item> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container();
                 }
-                var info = snapshot.data as Info?;
+                var info = snapshot.data as MachineInfo?;
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -180,16 +188,89 @@ class _ItemState extends State<_Item> {
   }
 
   late Future<bool> isConnected;
-  late Future<Info?> info;
-
-  void refresh() => setState(() {
-        isConnected = widget.x.isConnected();
-        info = widget.x.getInfo();
-      });
+  late Future<MachineInfo?> info;
 
   @override
   void initState() {
     super.initState();
-    refresh();
+    isConnected = widget.x.isConnected();
+    info = widget.x.getInfo();
+  }
+}
+
+class _MoreDetails extends StatelessWidget {
+  final Speaker x;
+  late final Future<MachineInfo?> info;
+
+  _MoreDetails(this.x) {
+    info = x.getInfo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: info,
+      builder: (ctx, snapshot) {
+        // todo display placeholder when loading
+        var loaded = snapshot.connectionState == ConnectionState.done;
+        var info = snapshot.data as MachineInfo?;
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // info col
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _Field(
+                  label: "IP Address",
+                  value: x.ip,
+                ),
+                _Field(
+                  label: "Hostname",
+                  value: loaded
+                      ? info != null
+                          ? info.hostname
+                          : "Disconnected"
+                      : "...",
+                ),
+              ],
+            ),
+
+            // status
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _Field extends StatelessWidget {
+  final String label;
+  final String value;
+
+  _Field({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(2.5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey,
+            ),
+          ),
+          Text(value),
+        ],
+      ),
+    );
   }
 }

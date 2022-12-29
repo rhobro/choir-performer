@@ -23,7 +23,8 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kSpeakerIsConnectedConstMeta;
 
-  Future<Info?> speakerGetInfo({required RwLockRawSpeaker x, dynamic hint});
+  Future<MachineInfo?> speakerGetInfo(
+      {required RwLockRawSpeaker x, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kSpeakerGetInfoConstMeta;
 
@@ -51,11 +52,11 @@ class RwLockRawSpeaker extends FrbOpaque {
   OpaqueTypeFinalizer get staticFinalizer => bridge.RwLockRawSpeakerFinalizer;
 }
 
-class Info {
+class MachineInfo {
   final String hostname;
   final OS os;
 
-  Info({
+  MachineInfo({
     required this.hostname,
     required this.os,
   });
@@ -128,11 +129,12 @@ class NativeImpl implements Native {
         argNames: ["x"],
       );
 
-  Future<Info?> speakerGetInfo({required RwLockRawSpeaker x, dynamic hint}) {
+  Future<MachineInfo?> speakerGetInfo(
+      {required RwLockRawSpeaker x, dynamic hint}) {
     var arg0 = _platform.api2wire_RwLockRawSpeaker(x);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner.wire_speaker_get_info(port_, arg0),
-      parseSuccessData: _wire2api_opt_box_autoadd_info,
+      parseSuccessData: _wire2api_opt_box_autoadd_machine_info,
       constMeta: kSpeakerGetInfoConstMeta,
       argValues: [x],
       hint: hint,
@@ -186,8 +188,8 @@ class NativeImpl implements Native {
     return raw as bool;
   }
 
-  Info _wire2api_box_autoadd_info(dynamic raw) {
-    return _wire2api_info(raw);
+  MachineInfo _wire2api_box_autoadd_machine_info(dynamic raw) {
+    return _wire2api_machine_info(raw);
   }
 
   double _wire2api_f64(dynamic raw) {
@@ -198,18 +200,18 @@ class NativeImpl implements Native {
     return raw as int;
   }
 
-  Info _wire2api_info(dynamic raw) {
+  MachineInfo _wire2api_machine_info(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 2)
       throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return Info(
+    return MachineInfo(
       hostname: _wire2api_String(arr[0]),
       os: _wire2api_os(arr[1]),
     );
   }
 
-  Info? _wire2api_opt_box_autoadd_info(dynamic raw) {
-    return raw == null ? null : _wire2api_box_autoadd_info(raw);
+  MachineInfo? _wire2api_opt_box_autoadd_machine_info(dynamic raw) {
+    return raw == null ? null : _wire2api_box_autoadd_machine_info(raw);
   }
 
   OS _wire2api_os(dynamic raw) {
