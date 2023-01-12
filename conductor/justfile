@@ -23,8 +23,9 @@ check:
 clean:
     flutter clean
     cd native && cargo clean
+    rm pubspec.lock native/Cargo.lock
 
 upgrade:
     flutter pub upgrade
     cd native && cargo update
-    cargo install-update flutter_rust_bridge_codegen
+    cargo install flutter_rust_bridge_codegen --force

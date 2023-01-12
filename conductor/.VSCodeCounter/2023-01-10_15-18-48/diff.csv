@@ -1,0 +1,11 @@
+"filename", "language", "Dart", "TOML", "Rust", "comment", "blank", "total"
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/native/bridge_generated.dart", "Dart", -422, 0, 0, -18, -93, -533
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/native/bridge_generated.freezed.dart", "Dart", -281, 0, 0, -18, -45, -344
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/native/speaker.dart", "Dart", 0, 0, 0, -1, 0, -1
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/util/stream.dart", "Dart", 2, 0, 0, 0, 0, 2
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/views/discovery.dart", "Dart", 16, 0, 0, -2, 4, 18
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/Cargo.toml", "TOML", 0, 1, 0, 0, 0, 1
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/src/api.rs", "Rust", 0, 0, -1, 1, 0, 0
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/src/bridge_generated.io.rs", "Rust", 0, 0, -93, -7, -22, -122
+"/Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/src/bridge_generated.rs", "Rust", 0, 0, -126, -11, -18, -155
+"Total", "-", -685, 1, -220, -56, -174, -1134

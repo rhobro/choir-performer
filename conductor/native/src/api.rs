@@ -1,79 +1,92 @@
+use std::net::TcpStream;
 pub use std::sync::RwLock;
-
-use flutter_rust_bridge::RustOpaque;
-use rand::{distributions::Standard, prelude::*, Rng};
+use chrono::{DateTime, Utc};
+use flutter_rust_bridge::{RustOpaque, SyncReturn, StreamSink};
+use tungstenite::{connect, stream::MaybeTlsStream, WebSocket, Message};
+use url::Url;
 
 pub struct RawSpeaker {
     ip: String,
-    conn: bool,
+    conn: Option<WebSocket<MaybeTlsStream<TcpStream>>>,
+
+    last_ping: DateTime<Utc>,
 }
 
-pub fn speaker_new(ip: String) -> anyhow::Result<RustOpaque<RwLock<RawSpeaker>>> {
-    Ok(RustOpaque::new(RwLock::new(RawSpeaker { ip, conn: false })))
+// constructor
+// non blocking
+pub fn speaker_new(ip: String) -> anyhow::Result<SyncReturn<RustOpaque<RwLock<RawSpeaker>>>> {
+    Ok(SyncReturn(RustOpaque::new(RwLock::new(RawSpeaker {
+        ip,
+        conn: None,
+        last_ping: Utc::now(),
+    }))))
 }
 
-pub fn speaker_connect(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<()> {
+// connect
+// open stream
+pub fn speaker_connect(x: RustOpaque<RwLock<RawSpeaker>>, sink: StreamSink<Update>) -> anyhow::Result<()> {
     let mut x = x.write().unwrap();
 
-    x.conn = rand::thread_rng().gen_bool(0.7);
+    // connect
+    let (conn, _) = connect(Url::parse(&format!("ws://{}", x.ip))?)?;
+    x.conn = Some(conn);
+
+    // check connected
+    loop {
+        let message = x.conn.as_mut().unwrap().read_message()?;
+
+        // check message
+        match message {
+            // data
+            Message::Binary(_) => todo!(),
+
+            // received response to ping
+            Message::Pong(_) => {
+                let delta = Utc::now() - x.last_ping;
+                sink.add(Update::Ping(Ping(delta.num_milliseconds())));
+            },
+
+            // close TODO notify gui
+            Message::Close(_) => break,
+            _ => {},
+        }
+    }
+
+    sink.close();
     Ok(())
 }
 
 // alive connection?
-pub fn speaker_is_connected(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<bool> {
+// non blocking
+pub fn speaker_is_connected(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<SyncReturn<bool>> {
     let x = x.read().unwrap();
 
-    Ok(x.conn)
+    Ok(SyncReturn(x.conn.is_some()))
 }
 
-// get current state
-// only available if connected
-pub fn speaker_get_info(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<Option<MachineInfo>> {
-    let x = x.read().unwrap();
-    let i = x.ip.split(".").last().unwrap().parse::<u32>().unwrap() % 3;
+// send ping request
+pub fn speaker_ping(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<()> {
+    let mut x = x.write().unwrap();
 
-    Ok(if x.conn {
-        Some(MachineInfo {
-            hostname: format!("Device {}", x.ip.chars().last().unwrap()),
-            os: match i {
-                0 => OS::MacOS,
-                1 => OS::Windows,
-                _ => OS::Linux,
-            },
-        })
-    } else {
-        None
-    })
-}
-
-// test latency
-pub fn speaker_ping(x: RustOpaque<RwLock<RawSpeaker>>) -> anyhow::Result<f64> {
-    let x = x.write().unwrap();
+    x.last_ping = Utc::now();
+    x.conn.as_mut().unwrap().write_message(Message::Ping(Vec::default()))?;
     
-    Ok(rand::thread_rng().gen())
+    Ok(())
+}
+
+// structs for Dart side
+
+pub enum Update {
+
+    // properties
+    Info(MachineInfo),
+    Ping(Ping),
 }
 
 pub struct MachineInfo {
     pub hostname: String,
-    pub os: OS,
+    pub mac: String,
+    pub os: String,
 }
 
-pub enum OS {
-    MacOS,
-    Windows,
-    Linux,
-}
-
-// allowing random OS choosing for debugging purposes
-// TODO remove
-impl Distribution<OS> for Standard {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> OS {
-        // match rng.gen_range(0, 3) { // rand 0.5, 0.6, 0.7
-        match rng.gen_range(0..2) {
-            // rand 0.8
-            0 => OS::MacOS,
-            1 => OS::Windows,
-            _ => OS::Linux,
-        }
-    }
-}
+pub struct Ping(pub i64);

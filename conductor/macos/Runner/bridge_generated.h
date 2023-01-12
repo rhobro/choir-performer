@@ -9,6 +9,8 @@ typedef int64_t DartPort;
 
 typedef bool (*DartPostCObjectFnType)(DartPort port_id, void *message);
 
+typedef struct DartCObject *WireSyncReturn;
+
 typedef struct wire_uint_8_list {
   uint8_t *ptr;
   int32_t len;
@@ -17,8 +19,6 @@ typedef struct wire_uint_8_list {
 typedef struct wire_RwLockRawSpeaker {
   const void *ptr;
 } wire_RwLockRawSpeaker;
-
-typedef struct DartCObject *WireSyncReturn;
 
 void store_dart_post_cobject(DartPostCObjectFnType ptr);
 
@@ -30,13 +30,11 @@ uintptr_t new_dart_opaque(Dart_Handle handle);
 
 intptr_t init_frb_dart_api_dl(void *obj);
 
-void wire_speaker_new(int64_t port_, struct wire_uint_8_list *ip);
+WireSyncReturn wire_speaker_new(struct wire_uint_8_list *ip);
 
 void wire_speaker_connect(int64_t port_, struct wire_RwLockRawSpeaker x);
 
-void wire_speaker_is_connected(int64_t port_, struct wire_RwLockRawSpeaker x);
-
-void wire_speaker_get_info(int64_t port_, struct wire_RwLockRawSpeaker x);
+WireSyncReturn wire_speaker_is_connected(struct wire_RwLockRawSpeaker x);
 
 void wire_speaker_ping(int64_t port_, struct wire_RwLockRawSpeaker x);
 
@@ -55,7 +53,6 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_speaker_new);
     dummy_var ^= ((int64_t) (void*) wire_speaker_connect);
     dummy_var ^= ((int64_t) (void*) wire_speaker_is_connected);
-    dummy_var ^= ((int64_t) (void*) wire_speaker_get_info);
     dummy_var ^= ((int64_t) (void*) wire_speaker_ping);
     dummy_var ^= ((int64_t) (void*) new_RwLockRawSpeaker);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);

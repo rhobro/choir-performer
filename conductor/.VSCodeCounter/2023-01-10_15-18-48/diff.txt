@@ -1,0 +1,42 @@
+Date : 2023-01-10 15:18:48
+Directory : /Users/rho/Desktop/rho/programming/projects/software/choir/conductor
+Total : 9 files,  -904 codes, -56 comments, -174 blanks, all -1134 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| TOML     |          1 |          1 |          0 |          0 |          1 |
+| Rust     |          3 |       -220 |        -17 |        -40 |       -277 |
+| Dart     |          5 |       -685 |        -39 |       -134 |       -858 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                          | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                             |          9 |       -904 |        -56 |       -174 |     -1,134 |
+| lib                                                                                                           |          5 |       -685 |        -39 |       -134 |       -858 |
+| lib/native                                                                                                    |          3 |       -703 |        -37 |       -138 |       -878 |
+| lib/util                                                                                                      |          1 |          2 |          0 |          0 |          2 |
+| lib/views                                                                                                     |          1 |         16 |         -2 |          4 |         18 |
+| native                                                                                                        |          4 |       -219 |        -17 |        -40 |       -276 |
+| native (Files)                                                                                                |          1 |          1 |          0 |          0 |          1 |
+| native/src                                                                                                    |          3 |       -220 |        -17 |        -40 |       -277 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                      | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/native/bridge_generated.dart         | Dart     |       -422 |        -18 |        -93 |       -533 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/native/bridge_generated.freezed.dart | Dart     |       -281 |        -18 |        -45 |       -344 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/native/speaker.dart                  | Dart     |          0 |         -1 |          0 |         -1 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/util/stream.dart                     | Dart     |          2 |          0 |          0 |          2 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/lib/views/discovery.dart                 | Dart     |         16 |         -2 |          4 |         18 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/Cargo.toml                        | TOML     |          1 |          0 |          0 |          1 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/src/api.rs                        | Rust     |         -1 |          1 |          0 |          0 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/src/bridge_generated.io.rs        | Rust     |        -93 |         -7 |        -22 |       -122 |
+| /Users/rho/Desktop/rho/programming/projects/software/choir/conductor/native/src/bridge_generated.rs           | Rust     |       -126 |        -11 |        -18 |       -155 |
+| Total                                                                                                         |          |       -904 |        -56 |       -174 |     -1,134 |
++---------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
