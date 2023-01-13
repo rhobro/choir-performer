@@ -1,0 +1,21 @@
+[package]
+name = "choir"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# net
+tokio = { version = "1", features = ["full"] } # todo restrict to necessary
+tokio-tungstenite = { version = "0.18", features = [ "rustls" ] }
+futures = "0.3"
+url = "2"
+
+# misc
+anyhow = "1"
+chrono = "0.4"
+
+[profile.release]
+lto = true
+codegen-units = 1
