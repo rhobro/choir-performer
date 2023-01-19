@@ -1,0 +1,31 @@
+syntax = "proto3";
+package choir.proto;
+
+message Message {
+    oneof message {
+        Action action = 1;
+        Ping ping = 2;
+        Pong pong = 3;
+    }
+}
+
+message Action {
+    Play play = 1;
+    Pause pause = 2;
+}
+
+message Play {
+    bytes data = 1;
+}
+
+message Pause {
+    bool placeholder = 1;
+}
+
+message Ping {
+    bool placeholder = 1;
+}
+
+message Pong {
+    uint32 ms = 1;
+}

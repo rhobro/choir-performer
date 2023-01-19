@@ -1,21 +1,24 @@
-use chrono::{DateTime, Utc};
 use futures::*;
-use tokio::net::TcpStream;
-use tokio_tungstenite::{connect_async, tungstenite::Message, WebSocketStream, MaybeTlsStream};
+use prost::Message;
+use tokio::sync::{mpsc::{self, UnboundedReceiver, UnboundedSender}};
+
+use crate::{Transport, proto::*};
 
 pub struct Speaker {
     ip: String,
-    conn: Option<Sock>,
 
-    last_ping: DateTime<Utc>,
+    // comms with processes
+    send: Option<UnboundedSender<Message>>,
+    recv: Option<UnboundedReceiver<Message>>,
 }
 
 impl Speaker {
     pub fn new(ip: String) -> Self {
         Self {
             ip,
-            conn: None,
-            last_ping: Utc::now(),
+
+            send: None,
+            recv: None,
         }
     }
 
@@ -24,52 +27,43 @@ impl Speaker {
         // check if required TODO
 
         // connect
-        let (mut conn, _) = connect_async(format!("ws://{}:5050", self.ip)).await?;
-        self.conn = Some(conn);
-        self.ping().await?;
+        let conn = Transport::connect(self.ip.to_string(), 5050).await?; // todo string
+        let (send, mut recv) = conn.split();
 
-        while let Some(message) = self.conn().next().await {
-            match message? {
-                // data
-                Message::Binary(_) => todo!(),
-
-                // received ping response
-                Message::Pong(_) => {
-                    println!("received pong at {}", Utc::now());
-                    self.ping().await?;
-                },
-
-                // close
-                Message::Close(_) => {
-                    break;
-                },
-                _ => {},
+        // receiving task
+        let (recv_write, recv_read) = mpsc::unbounded_channel();
+        tokio::spawn(async move {
+            while let Some(message) = recv.next().await {
+                // decode
+                let message = Message::decode(buf)?;
+                // channel
+                recv_write
             }
-        }
+        });
 
+        // sending task
+        let (send_write, mut send_read) = mpsc::unbounded_channel();
+        tokio::spawn(async move {
+            while let Some(message) = send_read.recv().await {
+            }
+        });
+
+        self.send = Some(send_write);
+        self.recv = Some(recv_read);
         Ok(())
     }
 
     pub fn is_connected(&self) -> bool {
-        self.conn.is_some()
+        self.send.is_some()
     }
 
     pub async fn ping(&mut self) -> anyhow::Result<()> {
-        self.conn().send(Message::Ping(Vec::default())).await?;
-
+        // self.conn().await.send(Frame::Ping).await?;
+        // self.send.unwrap().send(Action)
+        self.send.as_mut().unwrap().send(Message{
+            message: Some(message::Message::Ping(Ping { placeholder: true })),
+        })?;
         Ok(())
-    }
-
-    async fn close(&mut self) -> anyhow::Result<()> {
-        self.conn().close(None).await?;
-        self.conn = None;
-
-        Ok(())
-    }
-
-    fn conn(&mut self) -> &mut Sock {
-        self.conn.as_mut().unwrap()
     }
 }
 
-type Sock = WebSocketStream<MaybeTlsStream<TcpStream>>;
